@@ -1,0 +1,50 @@
+@model ToyStore.Models.Admin
+@{
+    ViewData["Title"] = "Xóa nhân viên";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Xác nhận xóa nhân viên</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa tài khoản nhân viên này không? Hành động này không thể hoàn tác.
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-3">ID:</dt>
+                    <dd class="col-sm-9">@Model.AdminId</dd>
+
+                    <dt class="col-sm-3">Họ tên:</dt>
+                    <dd class="col-sm-9">@Model.FullName</dd>
+
+                    <dt class="col-sm-3">Username:</dt>
+                    <dd class="col-sm-9">@Model.Username</dd>
+
+                    <dt class="col-sm-3">Vai trò:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-primary")">
+                            @Model.Role
+                        </span>
+                    </dd>
+                </dl>
+
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" asp-for="AdminId" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xác nhận xóa
+                    </button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

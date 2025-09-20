@@ -1,0 +1,107 @@
+@model ToyStore.Models.Order
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    var cart = ViewBag.Cart as ToyStore.Models.ShoppingCart ?? new ToyStore.Models.ShoppingCart();
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-credit-card"></i> Thông tin thanh toán</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/Order/Create" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Phương thức thanh toán</label>
+                                    <select name="PaymentMethod" class="form-select">
+                                        <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                                        <option value="BankTransfer">Chuyển khoản ngân hàng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Thông tin giao hàng</h6>
+                            <p class="mb-0">Đơn hàng sẽ được giao đến địa chỉ đã đăng ký trong tài khoản của bạn.</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/Cart" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check"></i> Đặt hàng ngay
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Đơn hàng của bạn</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var item in cart.Items)
+                    {
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div class="bg-light d-flex align-items-center justify-content-center rounded" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">@item.ProductName</h6>
+                                <small class="text-muted">Số lượng: @item.Quantity</small>
+                            </div>
+                            <div class="text-end">
+                                <strong class="text-success">@item.Total.ToString("N0") ₫</strong>
+                            </div>
+                        </div>
+                    }
+
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tạm tính:</span>
+                        <span>@cart.Total.ToString("N0") ₫</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Phí vận chuyển:</span>
+                        <span class="text-success">Miễn phí</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Tổng cộng:</strong>
+                        <strong class="text-success fs-5">@cart.Total.ToString("N0") ₫</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="fas fa-info-circle"></i> Thông tin giao hàng</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success"></i> Giao hàng miễn phí toàn quốc</li>
+                        <li><i class="fas fa-check text-success"></i> Giao hàng trong 2-3 ngày làm việc</li>
+                        <li><i class="fas fa-check text-success"></i> Thanh toán khi nhận hàng (COD)</li>
+                        <li><i class="fas fa-check text-success"></i> Đổi trả trong 7 ngày</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

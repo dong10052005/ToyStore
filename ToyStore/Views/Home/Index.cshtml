@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    var user = ViewBag.User as ToyStore.Models.UserSession;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Chào mừng đến với ToyStore</h1>
+    
+    @if (user != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Xin chào, @user.FullName!</h4>
+            <p>Bạn đã đăng nhập với tư cách <strong>@user.UserType</strong></p>
+            <hr>
+            <p class="mb-0">Chúc bạn mua sắm vui vẻ!</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Chào mừng!</h4>
+            <p>Hãy <a asp-controller="Auth" asp-action="Login" class="alert-link">đăng nhập</a> hoặc <a asp-controller="Auth" asp-action="Register" class="alert-link">đăng ký</a> để trải nghiệm đầy đủ các tính năng của cửa hàng.</p>
+        </div>
+    }
+    
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Sản phẩm đa dạng</h5>
+                    <p class="card-text">Khám phá hàng nghìn sản phẩm đồ chơi chất lượng cao cho mọi lứa tuổi.</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Xem sản phẩm</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Giao hàng nhanh</h5>
+                    <p class="card-text">Giao hàng miễn phí trong nội thành, giao hàng nhanh chóng và an toàn.</p>
+                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">Tìm hiểu thêm</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Hỗ trợ 24/7</h5>
+                    <p class="card-text">Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc.</p>
+                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">Liên hệ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

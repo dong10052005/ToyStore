@@ -1,0 +1,83 @@
+@model ToyStore.Models.Product
+
+@{
+    ViewData["Title"] = "Sửa sản phẩm";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0">Sửa sản phẩm: @Model.ProductName</h4>
+            </div>
+            <div class="card-body">
+                <form action="/Products/Edit/@Model.ProductId" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tên sản phẩm *</label>
+                                <input name="ProductName" class="form-control" value="@Model.ProductName" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Danh mục *</label>
+                                <select name="CategoryId" class="form-select" required>
+                                    <option value="">-- Chọn danh mục --</option>
+                                    @foreach (var category in ViewBag.Categories as List<ToyStore.Models.Category>)
+                                    {
+                                        <option value="@category.CategoryId" selected="@(category.CategoryId == Model.CategoryId)">
+                                            @category.CategoryName
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea name="Description" class="form-control" rows="3">@Model.Description</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Giá bán (₫) *</label>
+                                <input name="Price" type="number" class="form-control" step="1000" min="0" value="@Model.Price" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng tồn kho *</label>
+                                <input name="Stock" type="number" class="form-control" min="0" value="@Model.Stock" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Trạng thái</label>
+                                <select name="Status" class="form-select">
+                                    <option value="true" selected="@(Model.Status == true)">Đang bán</option>
+                                    <option value="false" selected="@(Model.Status == false)">Ngừng bán</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">URL hình ảnh</label>
+                        <input name="ImageUrl" class="form-control" value="@Model.ImageUrl" placeholder="https://example.com/image.jpg" />
+                        <small class="form-text text-muted">Nhập URL hình ảnh sản phẩm (tùy chọn)</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/Products" class="btn btn-secondary">Quay lại</a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Cập nhật sản phẩm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
