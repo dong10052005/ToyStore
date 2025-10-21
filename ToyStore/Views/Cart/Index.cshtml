@@ -132,6 +132,212 @@
     }
 </div>
 
+<style>
+/* Cart Page Styles */
+.container {
+    color: #fff;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(10, 10, 10, 0.8));
+    border: 2px solid #00ff88;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.cart-header h2 {
+    color: #00ff88;
+    font-weight: 800;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.cart-header h2 i {
+    margin-right: 0.5rem;
+}
+
+.badge {
+    background: rgba(0, 255, 136, 0.1) !important;
+    border: 2px solid #00ff88 !important;
+    color: #00ff88 !important;
+    font-weight: 600;
+}
+
+.btn-outline-primary {
+    background: linear-gradient(135deg, #00ff88, #00ffff);
+    color: #000 !important;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #00ffff, #00ff88);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    color: #000 !important;
+}
+
+.card {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)) !important;
+    border: 2px solid #00ff88 !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+    color: #000 !important;
+    font-weight: 700;
+    border-bottom: none !important;
+}
+
+.card-body {
+    color: #fff !important;
+}
+
+.card-body h6 {
+    color: #fff !important;
+}
+
+.card-body p {
+    color: #00ff88 !important;
+}
+
+.btn-outline-secondary {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid #00ff88;
+    color: #00ff88;
+}
+
+.btn-outline-secondary:hover {
+    background: #00ff88;
+    color: #000;
+    border-color: #00ff88;
+}
+
+.btn-outline-danger {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-outline-danger:hover {
+    background: #ff6b6b;
+    color: #fff;
+    border-color: #ff6b6b;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+    color: #000 !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    color: #000 !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+    color: #000 !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    color: #000 !important;
+}
+
+.text-success {
+    color: #00ff88 !important;
+}
+
+.text-muted {
+    color: #b0b0ff !important;
+}
+
+.border-bottom {
+    border-bottom: 1px solid rgba(0, 255, 136, 0.3) !important;
+}
+
+hr {
+    border-color: rgba(0, 255, 136, 0.3) !important;
+}
+
+.form-control {
+    background: rgba(26, 26, 46, 0.8) !important;
+    border: 1px solid #00ff88 !important;
+    color: #fff !important;
+}
+
+.form-control:focus {
+    background: rgba(26, 26, 46, 0.9) !important;
+    border-color: #00ffff !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.4) !important;
+    color: #fff !important;
+}
+
+.alert-success {
+    background: rgba(0, 255, 136, 0.1) !important;
+    border: 1px solid #00ff88 !important;
+    color: #00ff88 !important;
+}
+
+.alert-danger {
+    background: rgba(255, 107, 107, 0.1) !important;
+    border: 1px solid #ff6b6b !important;
+    color: #ff6b6b !important;
+}
+
+/* Empty cart styling */
+.text-center.py-5 {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(10, 10, 10, 0.8));
+    border: 2px solid #00ff88;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    padding: 3rem !important;
+}
+
+.text-center.py-5 i {
+    color: #00ff88 !important;
+    font-size: 4rem !important;
+}
+
+.text-center.py-5 h4 {
+    color: #fff !important;
+}
+
+.text-center.py-5 p {
+    color: #b0b0ff !important;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .cart-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .d-flex.align-items-center {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+
 <script>
 function changeQuantity(productId, newQuantity) {
     if (newQuantity < 1) return;
@@ -156,4 +362,3 @@ function changeQuantity(productId, newQuantity) {
     form.submit();
 }
 </script>
-

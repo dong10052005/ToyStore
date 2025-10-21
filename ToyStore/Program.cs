@@ -1,7 +1,6 @@
 ﻿using ToyStore.Models;
 using Microsoft.EntityFrameworkCore;
 using ToyStore.Services;
-using ToyStore.Extensions;
 using ToyStore.Middleware;
 using ToyStore.Scripts;
 
@@ -26,8 +25,8 @@ namespace ToyStore
                 options.Cookie.IsEssential = true;
             });
 
-            // Thêm custom services
-            builder.Services.AddCustomServices();
+            // Đăng ký DI cho services
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddControllersWithViews();
 
@@ -54,12 +53,9 @@ namespace ToyStore
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // Tạo admin mặc định nếu chưa có
+            // Chạy test hệ thống (chỉ trong development)
             try
             {
-                await CreateDefaultAdmin.CreateAdminAsync(app.Services);
-                
-                // Chạy test hệ thống (chỉ trong development)
                 if (app.Environment.IsDevelopment())
                 {
                     await TestAuthSystem.TestAsync(app.Services);
@@ -68,7 +64,7 @@ namespace ToyStore
             catch (Exception ex)
             {
                 var logger = app.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "Error creating default admin or running tests");
+                logger.LogError(ex, "Error running dev tests");
             }
 
             app.Run();

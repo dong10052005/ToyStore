@@ -41,6 +41,7 @@
                             </h6>
                             <span class="badge @(order.Status switch {
                                 "Pending" => "bg-warning",
+                                "Confirmed" => "bg-success",
                                 "Processing" => "bg-info", 
                                 "Shipped" => "bg-primary",
                                 "Delivered" => "bg-success",
@@ -48,7 +49,8 @@
                                 _ => "bg-secondary"
                             })">
                                 @(order.Status switch {
-                                    "Pending" => "Chờ xử lý",
+                                    "Pending" => "Chờ xác nhận",
+                                    "Confirmed" => "Đã xác nhận",
                                     "Processing" => "Đang xử lý",
                                     "Shipped" => "Đang giao",
                                     "Delivered" => "Đã giao",
@@ -99,6 +101,12 @@
                                         </button>
                                     </form>
                                 }
+                                else if (order.Status == "Confirmed")
+                                {
+                                    <span class="text-success">
+                                        <i class="fas fa-check-circle"></i> Đơn hàng đã được xác nhận
+                                    </span>
+                                }
                             </div>
                         </div>
                     </div>
@@ -118,3 +126,43 @@
         </div>
     }
 </div>
+
+<style>
+/* Fix text color in order cards */
+.card-body {
+    color: #333 !important;
+}
+
+.card-body strong {
+    color: #333 !important;
+}
+
+.card-body p {
+    color: #666 !important;
+}
+
+.card-body h6 {
+    color: #333 !important;
+}
+
+.card-body .text-muted {
+    color: #6c757d !important;
+}
+
+.card-body .text-success {
+    color: #28a745 !important;
+}
+
+.card-body .text-warning {
+    color: #ffc107 !important;
+}
+
+.card-body .text-info {
+    color: #17a2b8 !important;
+}
+
+/* Fix alert text color */
+.alert {
+    color: #333 !important;
+}
+</style>

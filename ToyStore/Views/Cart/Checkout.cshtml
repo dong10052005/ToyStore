@@ -8,17 +8,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0"><i class="fas fa-credit-card"></i> Thông tin thanh toán</h4>
+            <div class="card checkout-main-card">
+                <div class="card-header checkout-main-header">
+                    <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i> Thông tin thanh toán</h4>
                 </div>
                 <div class="card-body">
                     <form action="/Order/Create" method="post">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Phương thức thanh toán</label>
-                                    <select name="PaymentMethod" class="form-select">
+                                <div class="mb-4">
+                                    <label class="form-label checkout-form-label">
+                                        <i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
+                                    </label>
+                                    <select name="PaymentMethod" class="form-select checkout-form-select">
                                         <option value="COD">Thanh toán khi nhận hàng (COD)</option>
                                         <option value="BankTransfer">Chuyển khoản ngân hàng</option>
                                     </select>
@@ -26,82 +28,299 @@
                             </div>
                         </div>
 
-                        <div class="alert alert-info">
-                            <h6><i class="fas fa-info-circle"></i> Thông tin giao hàng</h6>
-                            <p class="mb-0">Đơn hàng sẽ được giao đến địa chỉ đã đăng ký trong tài khoản của bạn.</p>
+                        <div class="alert checkout-info-alert">
+                            <h6 class="checkout-info-title">
+                                <i class="fas fa-info-circle me-2"></i> Thông tin giao hàng
+                            </h6>
+                            <p class="checkout-info-text mb-0">Đơn hàng sẽ được giao đến địa chỉ đã đăng ký trong tài khoản của bạn.</p>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a href="/Cart" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                        <div class="d-flex justify-content-between checkout-actions">
+                            <a href="/Cart" class="btn checkout-btn-back">
+                                <i class="fas fa-arrow-left me-2"></i> Quay lại giỏ hàng
                             </a>
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-check"></i> Đặt hàng ngay
+                            <button type="submit" class="btn checkout-btn-confirm btn-lg">
+                                <i class="fas fa-check me-2"></i> Đặt hàng ngay
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Đơn hàng của bạn</h5>
+            <div class="card checkout-summary-card">
+                <div class="card-header checkout-summary-header">
+                    <h5 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của bạn</h5>
                 </div>
                 <div class="card-body">
                     @foreach (var item in cart.Items)
                     {
-                        <div class="d-flex align-items-center mb-3">
+                        <div class="d-flex align-items-center mb-3 checkout-item-row">
                             <div class="me-3">
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
-                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="checkout-product-image">
                                 }
                                 else
                                 {
-                                    <div class="bg-light d-flex align-items-center justify-content-center rounded" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-image text-muted"></i>
+                                    <div class="checkout-image-placeholder">
+                                        <i class="fas fa-image"></i>
                                     </div>
                                 }
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="mb-1">@item.ProductName</h6>
-                                <small class="text-muted">Số lượng: @item.Quantity</small>
+                                <h6 class="mb-1 checkout-product-name">@item.ProductName</h6>
+                                <small class="checkout-product-quantity">Số lượng: @item.Quantity</small>
                             </div>
                             <div class="text-end">
-                                <strong class="text-success">@item.Total.ToString("N0") ₫</strong>
+                                <strong class="checkout-product-price">@item.Total.ToString("N0") ₫</strong>
                             </div>
                         </div>
                     }
 
-                    <hr>
+                    <hr class="checkout-divider">
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Tạm tính:</span>
-                        <span>@cart.Total.ToString("N0") ₫</span>
+                        <span class="checkout-summary-label">Tạm tính:</span>
+                        <span class="checkout-summary-value">@cart.Total.ToString("N0") ₫</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Phí vận chuyển:</span>
-                        <span class="text-success">Miễn phí</span>
+                        <span class="checkout-summary-label">Phí vận chuyển:</span>
+                        <span class="checkout-shipping-free">Miễn phí</span>
                     </div>
-                    <hr>
+                    <hr class="checkout-divider">
                     <div class="d-flex justify-content-between">
-                        <strong>Tổng cộng:</strong>
-                        <strong class="text-success fs-5">@cart.Total.ToString("N0") ₫</strong>
+                        <strong class="checkout-total-label">Tổng cộng:</strong>
+                        <strong class="checkout-total-value">@cart.Total.ToString("N0") ₫</strong>
                     </div>
                 </div>
             </div>
 
-            <div class="card mt-3">
+            <div class="card checkout-benefits-card mt-3">
                 <div class="card-body">
-                    <h6><i class="fas fa-info-circle"></i> Thông tin giao hàng</h6>
-                    <ul class="list-unstyled small">
-                        <li><i class="fas fa-check text-success"></i> Giao hàng miễn phí toàn quốc</li>
-                        <li><i class="fas fa-check text-success"></i> Giao hàng trong 2-3 ngày làm việc</li>
-                        <li><i class="fas fa-check text-success"></i> Thanh toán khi nhận hàng (COD)</li>
-                        <li><i class="fas fa-check text-success"></i> Đổi trả trong 7 ngày</li>
+                    <h6 class="checkout-benefits-title">
+                        <i class="fas fa-info-circle me-2"></i> Thông tin giao hàng
+                    </h6>
+                    <ul class="list-unstyled checkout-benefits-list">
+                        <li><i class="fas fa-check me-2"></i> Giao hàng miễn phí toàn quốc</li>
+                        <li><i class="fas fa-check me-2"></i> Giao hàng trong 2-3 ngày làm việc</li>
+                        <li><i class="fas fa-check me-2"></i> Thanh toán khi nhận hàng (COD)</li>
+                        <li><i class="fas fa-check me-2"></i> Đổi trả trong 7 ngày</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Checkout Page Styles */
+    .checkout-main-card,
+    .checkout-summary-card,
+    .checkout-benefits-card {
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+        color: #fff !important;
+    }
+
+    .checkout-main-header,
+    .checkout-summary-header {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        color: #000 !important;
+        font-weight: 700;
+        border-bottom: none !important;
+    }
+
+    .checkout-form-label {
+        color: #00ff88 !important;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .checkout-form-select {
+        background: rgba(26, 26, 46, 0.8) !important;
+        border: 2px solid #00ff88 !important;
+        color: #fff !important;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .checkout-form-select:focus {
+        background: rgba(26, 26, 46, 0.9) !important;
+        border-color: #00ffff !important;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4) !important;
+        color: #fff !important;
+    }
+
+    .checkout-info-alert {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border: 2px solid #00ff88 !important;
+        color: #00ff88 !important;
+        border-radius: 0.75rem;
+        padding: 1rem;
+    }
+
+    .checkout-info-title {
+        color: #00ff88 !important;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .checkout-info-text {
+        color: #b0b0ff !important;
+        font-size: 0.95rem;
+    }
+
+    .checkout-btn-back {
+        background: rgba(108, 117, 125, 0.1) !important;
+        border: 2px solid #6c757d !important;
+        color: #6c757d !important;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .checkout-btn-back:hover {
+        background: #6c757d !important;
+        color: #fff !important;
+        border-color: #6c757d !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(108, 117, 125, 0.4);
+    }
+
+    .checkout-btn-confirm {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        color: #000 !important;
+        border: none !important;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.75rem 2rem;
+    }
+
+    .checkout-btn-confirm:hover {
+        background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        color: #000 !important;
+    }
+
+    .checkout-item-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    }
+
+    .checkout-item-row:last-child {
+        border-bottom: none;
+    }
+
+    .checkout-product-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border: 2px solid #00ff88;
+        border-radius: 0.75rem;
+    }
+
+    .checkout-image-placeholder {
+        width: 60px;
+        height: 60px;
+        background: rgba(26, 26, 46, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #00ff88;
+        font-size: 1.2rem;
+    }
+
+    .checkout-product-name {
+        color: #fff !important;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .checkout-product-quantity {
+        color: #b0b0ff !important;
+        font-size: 0.9rem;
+    }
+
+    .checkout-product-price {
+        color: #00ff88 !important;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .checkout-summary-label {
+        color: #b0b0ff !important;
+        font-weight: 500;
+    }
+
+    .checkout-summary-value {
+        color: #fff !important;
+        font-weight: 500;
+    }
+
+    .checkout-shipping-free {
+        color: #00ff88 !important;
+        font-weight: 600;
+    }
+
+    .checkout-total-label {
+        color: #fff !important;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .checkout-total-value {
+        color: #00ff88 !important;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .checkout-divider {
+        border-color: rgba(0, 255, 136, 0.3) !important;
+        margin: 1rem 0;
+    }
+
+    .checkout-benefits-title {
+        color: #00ff88 !important;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .checkout-benefits-list {
+        color: #b0b0ff !important;
+    }
+
+    .checkout-benefits-list li {
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .checkout-benefits-list i {
+        color: #00ff88 !important;
+        font-size: 1rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .checkout-actions {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .checkout-btn-back,
+        .checkout-btn-confirm {
+            width: 100%;
+        }
+        
+        .checkout-product-image,
+        .checkout-image-placeholder {
+            width: 50px;
+            height: 50px;
+        }
+    }
+</style>

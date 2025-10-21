@@ -51,6 +51,12 @@ namespace ToyStore.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
+                if (product.Stock < quantity)
+                {
+                    TempData["ErrorMessage"] = $"Số lượng sản phẩm không đủ. Chỉ còn {product.Stock} sản phẩm trong kho";
+                    return RedirectToAction("Index", "Home");
+                }
+
                 var cart = GetCart();
                 cart.AddItem(product, quantity);
                 SaveCart(cart);
@@ -67,10 +73,24 @@ namespace ToyStore.Controllers
 
         // POST: Cart/Update
         [HttpPost]
-        public IActionResult Update(int productId, int quantity)
+        public async Task<IActionResult> Update(int productId, int quantity)
         {
             try
             {
+                // Check product stock before updating
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    TempData["ErrorMessage"] = "Sản phẩm không tồn tại";
+                    return RedirectToAction("Index");
+                }
+
+                if (product.Stock < quantity)
+                {
+                    TempData["ErrorMessage"] = $"Số lượng sản phẩm không đủ. Chỉ còn {product.Stock} sản phẩm trong kho";
+                    return RedirectToAction("Index");
+                }
+
                 var cart = GetCart();
                 cart.UpdateQuantity(productId, quantity);
                 SaveCart(cart);
@@ -93,7 +113,7 @@ namespace ToyStore.Controllers
             {
                 var cart = GetCart();
                 var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
-                
+
                 if (item != null)
                 {
                     cart.RemoveItem(productId);
@@ -133,12 +153,15 @@ namespace ToyStore.Controllers
         public IActionResult Checkout()
         {
             var cart = GetCart();
-            
+
             if (!cart.Items.Any())
             {
                 TempData["ErrorMessage"] = "Giỏ hàng trống, không thể thanh toán";
                 return RedirectToAction("Index");
             }
+
+            // Pass the current cart to the view so totals are calculated correctly
+            ViewBag.Cart = cart;
 
             var order = new Order
             {

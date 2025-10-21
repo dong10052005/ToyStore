@@ -17,11 +17,19 @@ namespace ToyStore.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var user = AuthHelper.GetCurrentUser(HttpContext);
             ViewBag.User = user;
-            return View();
+            
+            // Lấy danh sách sản phẩm được nhóm theo danh mục
+            var categoriesWithProducts = await _context.Categories
+                .Include(c => c.Products.Where(p => p.Status == true))
+                .Where(c => c.Products.Any(p => p.Status == true))
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+            
+            return View(categoriesWithProducts);
         }
 
         public IActionResult Privacy()
@@ -31,13 +39,32 @@ namespace ToyStore.Controllers
 
         public async Task<IActionResult> Shop()
         {
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.Status == true)
-                .OrderByDescending(p => p.ProductId)
+            // Lấy danh sách sản phẩm được nhóm theo danh mục
+            var categoriesWithProducts = await _context.Categories
+                .Include(c => c.Products.Where(p => p.Status == true))
+                .Where(c => c.Products.Any(p => p.Status == true))
+                .OrderBy(c => c.CategoryName)
                 .ToListAsync();
             
-            return View(products);
+            return View(categoriesWithProducts);
+        }
+
+        // GET: Home/ProductDetails/5
+        public async Task<IActionResult> ProductDetails(int id)
+        {
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var user = AuthHelper.GetCurrentUser(HttpContext);
+            ViewBag.User = user;
+            
+            return View(product);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,65 +1,320 @@
 @model IEnumerable<ToyStore.Models.Order>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý đơn hàng";
 }
 
-<h1>Index</h1>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-shopping-bag"></i> Quản lý đơn hàng</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tạo đơn hàng mới
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentMethod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeliveryMethod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeliveryMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><i class="fas fa-hashtag me-2"></i>Mã đơn hàng</th>
+                                <th><i class="fas fa-user me-2"></i>Khách hàng</th>
+                                <th><i class="fas fa-calendar me-2"></i>Ngày đặt</th>
+                                <th><i class="fas fa-dollar-sign me-2"></i>Tổng tiền</th>
+                                <th><i class="fas fa-info-circle me-2"></i>Trạng thái</th>
+                                <th><i class="fas fa-credit-card me-2"></i>Phương thức thanh toán</th>
+                                <th><i class="fas fa-cogs me-2"></i>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary fs-6">#@item.OrderId</span>
+                                    </td>
+                                    <td>
+                                        @if (item.Customer != null)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-2">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>@item.Customer.FullName</strong>
+                                                    <br />
+                                                    <small class="text-muted">@item.Customer.Email</small>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Không có thông tin</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@item.OrderDate?.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-success">@item.TotalAmount.ToString("N0") ₫</strong>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string statusClass = item.Status switch
+                                            {
+                                                "Pending" => "bg-warning",
+                                                "Confirmed" => "bg-success",
+                                                "Cancelled" => "bg-danger",
+                                                "Completed" => "bg-info",
+                                                _ => "bg-secondary"
+                                            };
+                                            string statusText = item.Status switch
+                                            {
+                                                "Pending" => "Chờ xác nhận",
+                                                "Confirmed" => "Đã xác nhận",
+                                                "Cancelled" => "Đã hủy",
+                                                "Completed" => "Hoàn thành",
+                                                _ => item.Status
+                                            };
+                                            string statusIcon = item.Status switch
+                                            {
+                                                "Pending" => "fas fa-clock",
+                                                "Confirmed" => "fas fa-check-circle",
+                                                "Cancelled" => "fas fa-times-circle",
+                                                "Completed" => "fas fa-check-double",
+                                                _ => "fas fa-question-circle"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">
+                                            <i class="@statusIcon me-1"></i>@statusText
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">@item.PaymentMethod</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info btn-sm" title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            @if (item.Status == "Pending")
+                                            {
+                                                <form asp-action="Confirm" asp-route-id="@item.OrderId" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-success btn-sm" title="Xác nhận đơn hàng" 
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xác nhận đơn hàng #@item.OrderId?')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                <form asp-action="Cancel" asp-route-id="@item.OrderId" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Hủy đơn hàng"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng #@item.OrderId?')">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            
+                                            <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-danger btn-sm" title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-shopping-bag fa-4x text-muted mb-4"></i>
+            <h4 class="text-muted">Chưa có đơn hàng nào</h4>
+            <p class="text-muted">Chưa có đơn hàng nào trong hệ thống</p>
+            <a asp-action="Create" class="btn btn-primary">Tạo đơn hàng đầu tiên</a>
+        </div>
+    }
+</div>
+
+<style>
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #00ff88, #00ffff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        background: linear-gradient(135deg, #1a1a2e, #0a0a0a) !important;
+        color: #00ff88 !important;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #fff !important;
+    }
+
+    .table-hover > tbody > tr:hover > td {
+        background-color: rgba(0, 255, 136, 0.1) !important;
+    }
+
+    .btn-group .btn {
+        margin-right: 2px;
+    }
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+
+    .card {
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+    }
+
+    .card-body {
+        color: #fff !important;
+    }
+
+    .alert-success {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border: 1px solid #00ff88 !important;
+        color: #00ff88 !important;
+    }
+
+    .alert-danger {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 1px solid #ff6b6b !important;
+        color: #ff6b6b !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        color: #000 !important;
+        border: none !important;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        color: #000 !important;
+    }
+
+    .btn-info {
+        background: rgba(0, 255, 255, 0.1) !important;
+        border: 1px solid #00ffff !important;
+        color: #00ffff !important;
+    }
+
+    .btn-info:hover {
+        background: #00ffff !important;
+        color: #000 !important;
+        border-color: #00ffff !important;
+    }
+
+    .btn-warning {
+        background: rgba(255, 193, 7, 0.1) !important;
+        border: 1px solid #ffc107 !important;
+        color: #ffc107 !important;
+    }
+
+    .btn-warning:hover {
+        background: #ffc107 !important;
+        color: #000 !important;
+        border-color: #ffc107 !important;
+    }
+
+    .btn-danger {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 1px solid #ff6b6b !important;
+        color: #ff6b6b !important;
+    }
+
+    .btn-danger:hover {
+        background: #ff6b6b !important;
+        color: #fff !important;
+        border-color: #ff6b6b !important;
+    }
+
+    .btn-success {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border: 1px solid #00ff88 !important;
+        color: #00ff88 !important;
+    }
+
+    .btn-success:hover {
+        background: #00ff88 !important;
+        color: #000 !important;
+        border-color: #00ff88 !important;
+    }
+
+    .text-success {
+        color: #00ff88 !important;
+    }
+
+    .text-muted {
+        color: #b0b0ff !important;
+    }
+
+    .badge {
+        font-weight: 600;
+    }
+
+    .text-center.py-5 {
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(10, 10, 10, 0.8));
+        border: 2px solid #00ff88;
+        border-radius: 1rem;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        padding: 3rem !important;
+    }
+
+    .text-center.py-5 i {
+        color: #00ff88 !important;
+        font-size: 4rem !important;
+    }
+
+    .text-center.py-5 h4 {
+        color: #fff !important;
+    }
+
+    .text-center.py-5 p {
+        color: #b0b0ff !important;
+    }
+</style>

@@ -107,6 +107,89 @@ namespace ToyStore.Controllers
             return View(order);
         }
 
+        // POST: Order/BuyNow
+        [HttpPost]
+        public async Task<IActionResult> BuyNow(int productId, int quantity = 1)
+        {
+            try
+            {
+                // Check if customer is logged in
+                var customerId = GetCurrentCustomerId();
+                if (customerId == 0)
+                {
+                    TempData["ErrorMessage"] = "Vui lòng đăng nhập để mua hàng";
+                    return RedirectToAction("Login", "Auth");
+                }
+
+                // Get product details
+                var product = await _context.Products
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+                if (product == null)
+                {
+                    TempData["ErrorMessage"] = "Sản phẩm không tồn tại";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (product.Status != true)
+                {
+                    TempData["ErrorMessage"] = "Sản phẩm hiện không được bán";
+                    return RedirectToAction("ProductDetails", "Home", new { id = productId });
+                }
+
+                if (product.Stock < quantity)
+                {
+                    TempData["ErrorMessage"] = $"Số lượng sản phẩm không đủ. Chỉ còn {product.Stock} sản phẩm trong kho";
+                    return RedirectToAction("ProductDetails", "Home", new { id = productId });
+                }
+
+                if (quantity <= 0)
+                {
+                    TempData["ErrorMessage"] = "Số lượng phải lớn hơn 0";
+                    return RedirectToAction("ProductDetails", "Home", new { id = productId });
+                }
+
+                // Create order directly
+                var newOrder = new Order
+                {
+                    CustomerId = customerId,
+                    OrderDate = DateTime.Now,
+                    Status = "Pending",
+                    TotalAmount = product.Price * quantity,
+                    PaymentMethod = "COD"
+                };
+
+                _context.Orders.Add(newOrder);
+                await _context.SaveChangesAsync();
+
+                // Create order detail
+                var orderDetail = new OrderDetail
+                {
+                    OrderId = newOrder.OrderId,
+                    ProductId = product.ProductId,
+                    Quantity = quantity,
+                    UnitPrice = product.Price
+                };
+                
+                _context.OrderDetails.Add(orderDetail);
+
+                // Update product stock
+                product.Stock -= quantity;
+                if (product.Stock < 0) product.Stock = 0;
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Mua ngay thành công! Mã đơn hàng: #{newOrder.OrderId}";
+                return RedirectToAction("Details", new { id = newOrder.OrderId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return RedirectToAction("ProductDetails", "Home", new { id = productId });
+            }
+        }
+
         // GET: Order/MyOrders
         public async Task<IActionResult> MyOrders()
         {

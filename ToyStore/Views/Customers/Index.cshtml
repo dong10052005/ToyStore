@@ -1,65 +1,249 @@
 @model IEnumerable<ToyStore.Models.Customer>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý khách hàng";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users"></i> Quản lý khách hàng</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Thêm khách hàng mới
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PasswordHash)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PasswordHash)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
-            </td>
-        </tr>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 }
-    </tbody>
-</table>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="fas fa-id-card me-2"></i>ID</th>
+                            <th><i class="fas fa-user me-2"></i>Họ tên</th>
+                            <th><i class="fas fa-envelope me-2"></i>Email</th>
+                            <th><i class="fas fa-phone me-2"></i>Số điện thoại</th>
+                            <th><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ</th>
+                            <th><i class="fas fa-calendar me-2"></i>Ngày tạo</th>
+                            <th><i class="fas fa-cogs me-2"></i>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="badge bg-primary">#@item.CustomerId</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle me-2">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <strong>@item.FullName</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:@item.Email" class="text-decoration-none">
+                                        <i class="fas fa-envelope me-1"></i>@item.Email
+                                    </a>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Phone))
+                                    {
+                                        <a href="tel:@item.Phone" class="text-decoration-none">
+                                            <i class="fas fa-phone me-1"></i>@item.Phone
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa cập nhật</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Address))
+                                    {
+                                        <span title="@item.Address">
+                                            @(item.Address.Length > 30 ? item.Address.Substring(0, 30) + "..." : item.Address)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa cập nhật</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-muted">@item.CreatedAt?.ToString("dd/MM/yyyy")</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-sm btn-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-sm btn-warning" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.CustomerId" class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Chưa có khách hàng nào</h5>
+                <p class="text-muted">Hãy thêm khách hàng đầu tiên</p>
+                <a asp-action="Create" class="btn btn-primary">Thêm khách hàng</a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #00ff88, #00ffff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        background: linear-gradient(135deg, #1a1a2e, #0a0a0a) !important;
+        color: #00ff88 !important;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #fff !important;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > td {
+        background-color: rgba(26, 26, 46, 0.3) !important;
+    }
+
+    .table-hover > tbody > tr:hover > td {
+        background-color: rgba(0, 255, 136, 0.1) !important;
+    }
+
+    .btn-group .btn {
+        margin-right: 2px;
+    }
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+
+    .card {
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+    }
+
+    .card-body {
+        color: #fff !important;
+    }
+
+    .alert-success {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border: 1px solid #00ff88 !important;
+        color: #00ff88 !important;
+    }
+
+    .alert-danger {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 1px solid #ff6b6b !important;
+        color: #ff6b6b !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        color: #000 !important;
+        border: none !important;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        color: #000 !important;
+    }
+
+    .btn-info {
+        background: rgba(0, 255, 255, 0.1) !important;
+        border: 1px solid #00ffff !important;
+        color: #00ffff !important;
+    }
+
+    .btn-info:hover {
+        background: #00ffff !important;
+        color: #000 !important;
+        border-color: #00ffff !important;
+    }
+
+    .btn-warning {
+        background: rgba(255, 193, 7, 0.1) !important;
+        border: 1px solid #ffc107 !important;
+        color: #ffc107 !important;
+    }
+
+    .btn-warning:hover {
+        background: #ffc107 !important;
+        color: #000 !important;
+        border-color: #ffc107 !important;
+    }
+
+    .btn-danger {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 1px solid #ff6b6b !important;
+        color: #ff6b6b !important;
+    }
+
+    .btn-danger:hover {
+        background: #ff6b6b !important;
+        color: #fff !important;
+        border-color: #ff6b6b !important;
+    }
+
+    .text-muted {
+        color: #b0b0ff !important;
+    }
+
+    .badge {
+        font-weight: 600;
+    }
+</style>

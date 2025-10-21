@@ -33,6 +33,7 @@
                             <strong>Trạng thái:</strong>
                             <span class="badge @(Model.Status switch {
                                 "Pending" => "bg-warning",
+                                "Confirmed" => "bg-success",
                                 "Processing" => "bg-info", 
                                 "Shipped" => "bg-primary",
                                 "Delivered" => "bg-success",
@@ -40,7 +41,8 @@
                                 _ => "bg-secondary"
                             }) ms-2">
                                 @(Model.Status switch {
-                                    "Pending" => "Chờ xử lý",
+                                    "Pending" => "Chờ xác nhận",
+                                    "Confirmed" => "Đã xác nhận",
                                     "Processing" => "Đang xử lý",
                                     "Shipped" => "Đang giao",
                                     "Delivered" => "Đã giao",
@@ -166,14 +168,27 @@
             {
                 <div class="card mt-3">
                     <div class="card-body text-center">
-                        <h6 class="text-warning">Đơn hàng đang chờ xử lý</h6>
-                        <p class="text-muted">Bạn có thể hủy đơn hàng này nếu chưa được xử lý</p>
+                        <h6 class="text-warning">Đơn hàng đang chờ xác nhận</h6>
+                        <p class="text-muted">Bạn có thể hủy đơn hàng này nếu chưa được xác nhận</p>
                         <form action="/Order/Cancel/@Model.OrderId" method="post" class="d-inline">
                             <button type="submit" class="btn btn-danger" 
                                     onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
                                 <i class="fas fa-times"></i> Hủy đơn hàng
                             </button>
                         </form>
+                    </div>
+                </div>
+            }
+            else if (Model.Status == "Confirmed")
+            {
+                <div class="card mt-3">
+                    <div class="card-body text-center">
+                        <h6 class="text-success">Đơn hàng đã được xác nhận</h6>
+                        <p class="text-muted">Cửa hàng đã xác nhận đơn hàng của bạn. Đơn hàng sẽ được xử lý và giao trong thời gian sớm nhất.</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Thông báo:</strong> Đơn hàng đã được xác nhận và không thể hủy.
+                        </div>
                     </div>
                 </div>
             }
@@ -192,3 +207,62 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Fix text color in order details cards */
+.card-body {
+    color: #333 !important;
+}
+
+.card-body strong {
+    color: #333 !important;
+}
+
+.card-body p {
+    color: #666 !important;
+}
+
+.card-body h6 {
+    color: #333 !important;
+}
+
+.card-body .text-muted {
+    color: #6c757d !important;
+}
+
+.card-body .text-success {
+    color: #28a745 !important;
+}
+
+.card-body .text-warning {
+    color: #ffc107 !important;
+}
+
+.card-body .text-info {
+    color: #17a2b8 !important;
+}
+
+/* Fix table text color */
+.table td, .table th {
+    color: #333 !important;
+}
+
+.table .text-muted {
+    color: #6c757d !important;
+}
+
+.table .fw-bold {
+    color: #333 !important;
+}
+
+/* Fix alert text color */
+.alert {
+    color: #333 !important;
+}
+
+.alert-info {
+    background-color: #d1ecf1 !important;
+    border-color: #bee5eb !important;
+    color: #0c5460 !important;
+}
+</style>

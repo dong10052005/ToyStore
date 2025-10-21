@@ -106,10 +106,46 @@ namespace ToyStore.Scripts
                 Console.WriteLine("✗ Duplicate email check failed");
             }
 
+            // Test 5: Test customer profile update
+            Console.WriteLine("\n5. Testing customer profile update...");
+            var customer = await context.Customers.FirstOrDefaultAsync(c => c.Email == "test@example.com");
+            if (customer != null)
+            {
+                var originalName = customer.FullName;
+                var originalPhone = customer.Phone;
+                
+                // Simulate profile update
+                customer.FullName = "Nguyễn Văn A (Updated)";
+                customer.Phone = "0999888777";
+                customer.Address = "456 Updated Street";
+                
+                context.Update(customer);
+                await context.SaveChangesAsync();
+                
+                // Verify update
+                var updatedCustomer = await context.Customers.FindAsync(customer.CustomerId);
+                if (updatedCustomer != null && 
+                    updatedCustomer.FullName == "Nguyễn Văn A (Updated)" &&
+                    updatedCustomer.Phone == "0999888777" &&
+                    updatedCustomer.Address == "456 Updated Street")
+                {
+                    Console.WriteLine("✓ Customer profile update successful");
+                }
+                else
+                {
+                    Console.WriteLine("✗ Customer profile update failed");
+                }
+            }
+            else
+            {
+                Console.WriteLine("✗ Customer not found for profile update test");
+            }
+
             Console.WriteLine("\n=== Authentication System Test Complete ===");
         }
     }
 }
+
 
 
 

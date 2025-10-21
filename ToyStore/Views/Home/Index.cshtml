@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<ToyStore.Models.Category>
+@{
     ViewData["Title"] = "Trang chủ";
     var user = ViewBag.User as ToyStore.Models.UserSession;
 }
@@ -25,31 +26,237 @@
     
     <div class="row mt-5">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Sản phẩm đa dạng</h5>
-                    <p class="card-text">Khám phá hàng nghìn sản phẩm đồ chơi chất lượng cao cho mọi lứa tuổi.</p>
-                    <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Xem sản phẩm</a>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cubes"></i>
                 </div>
+                <h5 class="feature-title">Sản phẩm đa dạng</h5>
+                <p class="feature-description">Khám phá hàng nghìn sản phẩm đồ chơi chất lượng cao cho mọi lứa tuổi.</p>
+                <a asp-controller="Home" asp-action="Shop" class="feature-btn">Xem sản phẩm</a>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Giao hàng nhanh</h5>
-                    <p class="card-text">Giao hàng miễn phí trong nội thành, giao hàng nhanh chóng và an toàn.</p>
-                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">Tìm hiểu thêm</a>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
                 </div>
+                <h5 class="feature-title">Giao hàng nhanh</h5>
+                <p class="feature-description">Giao hàng miễn phí trong nội thành, giao hàng nhanh chóng và an toàn.</p>
+                <a asp-controller="Home" asp-action="Privacy" class="feature-btn">Tìm hiểu thêm</a>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Hỗ trợ 24/7</h5>
-                    <p class="card-text">Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc.</p>
-                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">Liên hệ</a>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
                 </div>
+                <h5 class="feature-title">Hỗ trợ 24/7</h5>
+                <p class="feature-description">Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc.</p>
+                <a asp-controller="Home" asp-action="Privacy" class="feature-btn">Liên hệ</a>
             </div>
         </div>
     </div>
+    
+    <!-- Section hiển thị sản phẩm theo danh mục -->
+    <div class="mt-5">
+        <h2 class="mb-4">Sản phẩm theo danh mục</h2>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var category in Model)
+            {
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="text-primary">
+                            <i class="fas fa-tags me-2"></i>@category.CategoryName
+                        </h3>
+                        <a asp-controller="Home" asp-action="Shop" class="btn btn-outline-primary btn-sm">
+                            Xem tất cả <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    
+                    @if (category.Products.Any())
+                    {
+                        <div class="row">
+                            @foreach (var product in category.Products.Take(6))
+                            {
+                                <div class="col-md-4 col-lg-2 mb-4">
+                                    <div class="card h-100 product-card" style="cursor: pointer;" onclick="location.href='@Url.Action("ProductDetails", "Home", new { id = product.ProductId })'">
+                                        <div class="position-relative">
+                                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                            {
+                                                <img src="@product.ImageUrl" class="card-img-top" alt="@product.ProductName" style="height: 200px; object-fit: cover;">
+                                            }
+                                            else
+                                            {
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                                </div>
+                                            }
+                                            @if (product.Stock == 0)
+                                            {
+                                                <div class="position-absolute top-0 end-0 m-2">
+                                                    <span class="badge bg-danger">Hết hàng</span>
+                                                </div>
+                                            }
+                                            else if (product.Stock <= 5)
+                                            {
+                                                <div class="position-absolute top-0 end-0 m-2">
+                                                    <span class="badge bg-warning">Sắp hết hàng</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="card-body d-flex flex-column">
+                                            <h6 class="card-title">@product.ProductName</h6>
+                                            <p class="card-text text-muted small">@category.CategoryName</p>
+                                            <p class="card-text text-primary fw-bold">@product.Price.ToString("N0") VNĐ</p>
+                                            <div class="mt-auto">
+                                                @if (user != null && user.UserType == "Customer")
+                                                {
+                                                    <div class="d-grid gap-2">
+                                                        @if (product.Stock > 0)
+                                                        {
+                                                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline" onclick="event.stopPropagation();">
+                                                                <input type="hidden" name="productId" value="@product.ProductId" />
+                                                                <input type="hidden" name="quantity" value="1" />
+                                                                <button type="submit" class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-secondary btn-sm w-100" disabled>
+                                                                <i class="fas fa-times me-1"></i>Hết hàng
+                                                            </button>
+                                                        }
+                                                        <a asp-controller="Home" asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">Xem chi tiết</a>
+                                                    </div>
+                                                }
+                                                else if (user != null && user.UserType != "Customer")
+                                                {
+                                                    <a asp-controller="Home" asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">Xem chi tiết</a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-controller="Home" asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">Xem chi tiết</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        
+                        @if (category.Products.Count() > 6)
+                        {
+                            <div class="text-center mt-3">
+                                <a asp-controller="Home" asp-action="Shop" class="btn btn-outline-secondary btn-sm">
+                                    Xem thêm @(category.Products.Count() - 6) sản phẩm khác
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-light" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Chưa có sản phẩm nào trong danh mục này.
+                        </div>
+                    }
+                </div>
+            }
+            
+            <div class="text-center mt-4">
+                <a asp-controller="Home" asp-action="Shop" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-store me-2"></i>Xem tất cả sản phẩm
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Chưa có sản phẩm nào!</h4>
+                <p>Hiện tại cửa hàng chưa có sản phẩm nào. Vui lòng quay lại sau.</p>
+            </div>
+        }
+    </div>
 </div>
+
+<style>
+    .product-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-card .btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+    /* Fix text color in product cards */
+    .product-card {
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+        color: #fff !important;
+    }
+
+    .product-card .card-title {
+        color: #fff !important;
+    }
+
+    .product-card .card-text {
+        color: #b0b0ff !important;
+    }
+
+    .product-card .text-primary {
+        color: #00ff88 !important;
+    }
+
+    .product-card .text-muted {
+        color: #b0b0ff !important;
+    }
+
+    .product-card .btn-primary {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        color: #000 !important;
+        border: none !important;
+        font-weight: 600;
+    }
+
+    .product-card .btn-primary:hover {
+        background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        color: #000 !important;
+    }
+
+    .product-card .btn-outline-primary {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border: 1px solid #00ff88 !important;
+        color: #00ff88 !important;
+    }
+
+    .product-card .btn-outline-primary:hover {
+        background: #00ff88 !important;
+        color: #000 !important;
+        border-color: #00ff88 !important;
+    }
+
+    .product-card .btn-secondary {
+        background: rgba(108, 117, 125, 0.1) !important;
+        border: 1px solid #6c757d !important;
+        color: #6c757d !important;
+    }
+
+    .product-card .badge {
+        font-weight: 600;
+    }
+
+    .product-card .bg-light {
+        background: rgba(26, 26, 46, 0.8) !important;
+        color: #b0b0ff !important;
+    }
+</style>

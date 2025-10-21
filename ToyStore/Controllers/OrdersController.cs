@@ -147,14 +147,119 @@ namespace ToyStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
+            try
             {
-                _context.Orders.Remove(order);
+                // First, check if order exists
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Đơn hàng không tồn tại";
+                    return RedirectToAction("Index");
+                }
+
+                // Check if order has order details
+                var orderDetails = await _context.OrderDetails
+                    .Where(od => od.OrderId == id)
+                    .ToListAsync();
+
+                if (orderDetails.Any())
+                {
+                    // Delete order details first
+                    _context.OrderDetails.RemoveRange(orderDetails);
+                    
+                    // Then delete the order
+                    _context.Orders.Remove(order);
+                    
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = $"Đã xóa đơn hàng #{id} và {orderDetails.Count} chi tiết sản phẩm thành công!";
+                }
+                else
+                {
+                    // Safe to delete - remove the order
+                    _context.Orders.Remove(order);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Xóa đơn hàng thành công!";
+                }
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Handle database constraint violations
+                TempData["ErrorMessage"] = "Không thể xóa đơn hàng vì đơn hàng đang được sử dụng trong hệ thống. Đơn hàng sẽ được giữ lại để lưu trữ.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
+        }
+
+        // POST: Orders/Confirm/5
+        [HttpPost]
+        public async Task<IActionResult> Confirm(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Đơn hàng không tồn tại";
+                    return RedirectToAction("Index");
+                }
+
+                if (order.Status == "Confirmed")
+                {
+                    TempData["WarningMessage"] = "Đơn hàng đã được xác nhận trước đó";
+                    return RedirectToAction("Index");
+                }
+
+                // Update order status to confirmed
+                order.Status = "Confirmed";
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Đã xác nhận đơn hàng #{order.OrderId} thành công!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        // POST: Orders/Cancel/5
+        [HttpPost]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Đơn hàng không tồn tại";
+                    return RedirectToAction("Index");
+                }
+
+                if (order.Status == "Cancelled")
+                {
+                    TempData["WarningMessage"] = "Đơn hàng đã được hủy trước đó";
+                    return RedirectToAction("Index");
+                }
+
+                // Update order status to cancelled
+                order.Status = "Cancelled";
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Đã hủy đơn hàng #{order.OrderId} thành công!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
 
         private bool OrderExists(int id)
