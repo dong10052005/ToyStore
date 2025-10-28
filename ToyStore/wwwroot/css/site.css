@@ -1,7 +1,7 @@
-html {
+﻿html {
   font-size: 14px;
 }
-
+    
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -19,4 +19,105 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+.select2-container--open .select2-dropdown .select2-results__options {
+    max-height: 250px; /* Bạn có thể đổi thành 200px hoặc 300px tùy ý */
+    overflow-y: auto;
+}
+
+/* CRUD Neon/Dark Theme */
+.crud-theme .card {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid #00ff88;
+  border-radius: 1rem;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.25), 0 0 60px rgba(0, 255, 136, 0.1);
+}
+
+.crud-theme .card-header {
+  background: linear-gradient(135deg, #00ff88 0%, #00ffff 100%) !important;
+  color: #000 !important;
+  border-bottom: 0;
+}
+
+.crud-theme .card-body {
+  background: #0f1223;
+}
+
+.crud-theme .form-label {
+  color: #b0b0ff;
+  font-weight: 600;
+}
+
+.crud-theme .form-control,
+.crud-theme .form-select,
+.crud-theme textarea {
+  background-color: #242442;
+  border: 2px solid #00ff88;
+  color: #fff;
+}
+
+.crud-theme .form-control::placeholder,
+.crud-theme textarea::placeholder {
+  color: #8fa0ff;
+}
+
+.crud-theme .form-control:focus,
+.crud-theme .form-select:focus,
+.crud-theme textarea:focus {
+  border-color: #00ff44;
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.35);
+}
+
+.crud-theme .btn-primary,
+.crud-theme .btn-success {
+  background: linear-gradient(135deg, #00ff88, #00ffff);
+  border: none;
+  color: #000;
+  font-weight: 700;
+}
+
+.crud-theme .btn-warning {
+  background: linear-gradient(135deg, #ffd166, #fcbf49);
+  border: none;
+  color: #000;
+  font-weight: 700;
+}
+
+.crud-theme .btn-danger {
+  background: linear-gradient(135deg, #ff006e, #ff4d6d);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+}
+
+.crud-theme .btn-secondary {
+  background: #1f1f35;
+  border: 1px solid #39416b;
+  color: #b0b0ff;
+}
+
+.crud-theme .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 255, 136, 0.25);
+}
+
+.crud-theme .badge {
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.crud-theme .alert-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  color: #ffd166;
+}
+
+.crud-theme dt {
+  color: #b0b0ff;
+}
+.crud-theme dd {
+  color: #e0e0ff;
+}
+
+.crud-theme h4, .crud-theme h3, .crud-theme h5, .crud-theme p, .crud-theme label, .crud-theme small {
+  color: #e0e0ff !important;
 }

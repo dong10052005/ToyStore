@@ -7,14 +7,60 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-store"></i> Cửa hàng đồ chơi</h2>
-        <div class="d-flex align-items-center">
-            <a href="/Cart" class="btn btn-primary me-2">
+        <div class="d-flex align-items-center gap-2">
+            <a href="/Cart" class="btn btn-primary">
                 <i class="fas fa-shopping-cart"></i> Giỏ hàng
                 <span class="badge bg-light text-dark ms-1" id="cart-count">0</span>
             </a>
             <a href="/Order/MyOrders" class="btn btn-outline-primary">
                 <i class="fas fa-receipt"></i> Đơn hàng của tôi
             </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card mb-4" style="background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 10, 0.9)); border: 2px solid #00ff88; border-radius: 1rem;">
+        <div class="card-body">
+            <form method="get" action="/Home/Shop" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label" style="color: #00ff88; font-weight: 600;">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm sản phẩm
+                    </label>
+                    <input type="text" name="searchName" value="@ViewBag.SearchName" 
+                           class="form-control search-input-shop" 
+                           placeholder="Nhập tên sản phẩm..." />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" style="color: #00ff88; font-weight: 600;">
+                        <i class="fas fa-tags me-2"></i>Lọc theo danh mục
+                    </label>
+                    <select name="categoryId" class="form-select category-select-shop">
+                        <option value="0">-- Tất cả danh mục --</option>
+                        @if (ViewBag.Categories != null)
+                        {
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.CategoryId" selected="@(ViewBag.CategoryId != null && ViewBag.CategoryId == category.CategoryId)">
+                                    @category.CategoryName
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="d-flex gap-2 w-100">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                        </button>
+                        @if (!string.IsNullOrEmpty((string)ViewBag.SearchName) || (ViewBag.CategoryId != null && (int)ViewBag.CategoryId > 0))
+                        {
+                            <a href="/Home/Shop" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Xóa bộ lọc
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -273,5 +319,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .text-center.py-5 p {
     color: #b0b0ff !important;
+}
+
+.search-input-shop,
+.category-select-shop {
+    background: rgba(26, 26, 46, 0.9) !important;
+    border: 2px solid #00ff88 !important;
+    border-radius: 0.5rem !important;
+    color: #fff !important;
+    padding: 0.5rem 1rem;
+}
+
+.search-input-shop::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.search-input-shop:focus,
+.category-select-shop:focus {
+    background: rgba(26, 26, 46, 1) !important;
+    border-color: #00ffff !important;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+    outline: none;
+}
+
+.category-select-shop {
+    cursor: pointer;
+}
+
+.category-select-shop option {
+    background: #1a1a2e !important;
+    color: #fff !important;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+
+.form-label {
+    color: #00ff88 !important;
+}
+
+.card .card-body {
+    color: #fff !important;
 }
 </style>

@@ -16,12 +16,33 @@ namespace ToyStore.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchName, int? categoryId)
         {
-            var products = await _context.Products
+            var productsQuery = _context.Products
                 .Include(p => p.Category)
+                .AsQueryable();
+
+            // Filter by product name if provided
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                productsQuery = productsQuery.Where(p => p.ProductName.Contains(searchName));
+            }
+
+            // Filter by category if provided
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            var products = await productsQuery
                 .OrderBy(p => p.ProductName)
                 .ToListAsync();
+
+            // Get categories for dropdown
+            var categories = await _context.Categories.OrderBy(c => c.CategoryName).ToListAsync();
+            ViewBag.Categories = categories;
+            ViewBag.SearchName = searchName;
+            ViewBag.CategoryId = categoryId;
             
             return View(products);
         }

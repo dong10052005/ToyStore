@@ -6,9 +6,20 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="fas fa-tags me-2"></i> Quản lý danh mục</h2>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i> Thêm danh mục mới
-    </a>
+    <div class="d-flex align-items-center gap-3">
+        <form asp-action="Index" method="get" class="d-flex align-items-center">
+            <div class="search-container">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" 
+                       class="form-control search-input" placeholder="Tìm kiếm danh mục..." />
+                <button type="submit" class="btn btn-outline-primary search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Thêm danh mục mới
+        </a>
+    </div>
 </div>
 
 @if (TempData["SuccessMessage"] != null)
@@ -291,12 +302,84 @@
         color: #000 !important;
     }
 
+    /* Search Styles */
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: rgba(26, 26, 46, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 0.75rem;
+        padding: 0.5rem;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .search-container:focus-within {
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        border-color: #00ffff;
+    }
+
+    .search-input {
+        background: transparent !important;
+        border: none !important;
+        color: #fff !important;
+        padding: 0.5rem 1rem;
+        width: 250px;
+        font-size: 0.95rem;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #b0b0ff !important;
+        opacity: 0.8;
+    }
+
+    .search-input:focus {
+        box-shadow: none !important;
+    }
+
+    .search-btn {
+        background: linear-gradient(135deg, #00ff88, #00ffff) !important;
+        border: none !important;
+        color: #000 !important;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        margin-left: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+        background: linear-gradient(135deg, #00ffff, #00ff88) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+        color: #000 !important;
+    }
+
+    .search-btn:focus {
+        box-shadow: 0 0 10px rgba(0, 255, 136, 0.4) !important;
+    }
+
     /* Responsive */
     @@media (max-width: 768px) {
         .d-flex.justify-content-between {
             flex-direction: column;
             gap: 1rem;
             text-align: center;
+        }
+        
+        .d-flex.align-items-center.gap-3 {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .search-container {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
         }
         
         .btn-group {

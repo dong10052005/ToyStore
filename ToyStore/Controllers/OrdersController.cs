@@ -21,10 +21,36 @@ namespace ToyStore.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchCustomer, string searchDate)
         {
-            var toyStoreContext = _context.Orders.Include(o => o.Customer);
-            return View(await toyStoreContext.ToListAsync());
+            var ordersQuery = _context.Orders
+                .Include(o => o.Customer)
+                .AsQueryable();
+
+            // Filter by customer name if provided
+            if (!string.IsNullOrEmpty(searchCustomer))
+            {
+                ordersQuery = ordersQuery.Where(o => o.Customer.FullName.Contains(searchCustomer));
+            }
+
+            // Filter by date if provided
+            if (!string.IsNullOrEmpty(searchDate))
+            {
+                if (DateTime.TryParse(searchDate, out DateTime parsedDate))
+                {
+                    ordersQuery = ordersQuery.Where(o => o.OrderDate.HasValue && 
+                        o.OrderDate.Value.Date == parsedDate.Date);
+                }
+            }
+
+            var orders = await ordersQuery
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            ViewBag.SearchCustomer = searchCustomer;
+            ViewBag.SearchDate = searchDate;
+            
+            return View(orders);
         }
 
         // GET: Orders/Details/5

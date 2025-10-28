@@ -283,3 +283,83 @@ h1 {
 p {
     color: #e0e0ff !important;
 }
+
+/* Password toggle button styles */
+.password-toggle-btn {
+    border: 2px solid #00ff88;
+    background: linear-gradient(135deg, #1a1a2e, #24243e);
+    color: #00ff88;
+    border-left: none;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.password-toggle-btn:hover {
+    background: linear-gradient(135deg, #00ff88, #00ffff);
+    color: #000;
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+    transform: scale(1.05);
+}
+
+.password-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.password-toggle-btn:focus {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+    outline: none;
+}
+
+/* Password toggle icon animation */
+.password-toggle-icon {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.1rem;
+}
+
+.password-toggle-btn:hover .password-toggle-icon {
+    transform: scale(1.2) rotate(5deg);
+    animation: eyeBlink 0.6s ease-in-out;
+}
+
+@keyframes eyeBlink {
+    0%, 100% { transform: scale(1.2) rotate(5deg); }
+    50% { transform: scale(1.1) rotate(0deg); }
+}
+
+/* Eye icon rotation animation when toggling */
+.password-toggle-icon.rotating {
+    animation: eyeRotate 0.4s ease-in-out;
+}
+
+@keyframes eyeRotate {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Input group focus effect for password fields */
+.input-group:focus-within .password-toggle-btn {
+    background: linear-gradient(135deg, #00ff88, #00ffff);
+    color: #000;
+    border-color: #00ff44;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+}
+
+/* Smooth transition for password visibility */
+input[type="password"], input[type="text"] {
+    transition: all 0.3s ease;
+}
+
+/* Pulse effect for password toggle button */
+.password-toggle-btn.pulse {
+    animation: pulseEffect 0.5s ease-in-out;
+}
+
+@keyframes pulseEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); box-shadow: 0 0 25px rgba(0, 255, 136, 0.8); }
+    100% { transform: scale(1); }
+}
