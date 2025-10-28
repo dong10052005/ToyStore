@@ -63,6 +63,9 @@ namespace ToyStore.Controllers
                 HttpContext.Session.SetString("UserType", userSession.UserType);
                 HttpContext.Session.SetString("Role", userSession.Role);
                 HttpContext.Session.SetString("IsAuthenticated", userSession.IsAuthenticated.ToString());
+                
+                // Set flag to show welcome toast after login
+                HttpContext.Session.SetString("ShowWelcomeToast", "true");
 
                 _logger.LogInformation($"User {userSession.Username} logged in successfully");
 

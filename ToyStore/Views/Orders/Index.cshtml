@@ -7,9 +7,32 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-shopping-bag"></i> Quản lý đơn hàng</h2>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Tạo đơn hàng mới
-        </a>
+        <div class="d-flex align-items-center gap-3">
+            <form method="get" action="/Orders" class="d-flex align-items-center gap-2">
+                <div class="search-group">
+                    <input type="text" name="searchCustomer" value="@ViewBag.SearchCustomer" 
+                           class="form-control search-input" 
+                           placeholder="Tìm theo tên khách hàng..." />
+                </div>
+                <div class="search-group">
+                    <input type="date" name="searchDate" value="@ViewBag.SearchDate" 
+                           class="form-control date-input" 
+                           placeholder="Chọn ngày..." />
+                </div>
+                <button type="submit" class="btn btn-outline-light">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+                @if (!string.IsNullOrEmpty((string)ViewBag.SearchCustomer) || !string.IsNullOrEmpty((string)ViewBag.SearchDate))
+                {
+                    <a href="/Orders" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i> Xóa bộ lọc
+                    </a>
+                }
+            </form>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tạo đơn hàng mới
+            </a>
+        </div>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
@@ -316,5 +339,86 @@
 
     .text-center.py-5 p {
         color: #b0b0ff !important;
+    }
+
+    .search-group {
+        position: relative;
+    }
+
+    .search-input,
+    .date-input {
+        background: rgba(26, 26, 46, 0.8) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 0.5rem !important;
+        color: #fff !important;
+        padding: 0.5rem 1rem;
+        min-width: 200px;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .search-input:focus,
+    .date-input:focus {
+        background: rgba(26, 26, 46, 1) !important;
+        border-color: #00ffff !important;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+        outline: none;
+    }
+
+    .date-input {
+        cursor: pointer;
+    }
+
+    .btn-outline-light {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid #fff !important;
+        color: #fff !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-light:hover {
+        background: #fff !important;
+        color: #000 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-outline-secondary {
+        background: rgba(108, 117, 125, 0.1) !important;
+        border: 2px solid #6c757d !important;
+        color: #6c757d !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d !important;
+        color: #fff !important;
+        border-color: #6c757d !important;
+    }
+
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .gap-3 {
+        gap: 1rem !important;
+    }
+
+    @@media (max-width: 768px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .search-group .search-input,
+        .search-group .date-input {
+            min-width: 150px;
+        }
+
+        .d-flex.align-items-center {
+            flex-wrap: wrap;
+        }
     }
 </style>

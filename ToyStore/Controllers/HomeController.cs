@@ -17,18 +17,47 @@ namespace ToyStore.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchName)
         {
             var user = AuthHelper.GetCurrentUser(HttpContext);
             ViewBag.User = user;
             
-            // Lấy danh sách sản phẩm được nhóm theo danh mục
-            var categoriesWithProducts = await _context.Categories
+            // Check if user just logged in
+            var showWelcomeToast = HttpContext.Session.GetString("ShowWelcomeToast");
+            if (!string.IsNullOrEmpty(showWelcomeToast))
+            {
+                HttpContext.Session.Remove("ShowWelcomeToast");
+                TempData["ShowWelcomeToast"] = "true";
+            }
+            
+            var categoriesQuery = _context.Categories
                 .Include(c => c.Products.Where(p => p.Status == true))
                 .Where(c => c.Products.Any(p => p.Status == true))
+                .AsQueryable();
+            
+            // Filter products by name if search is provided
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                categoriesQuery = categoriesQuery
+                    .Where(c => c.Products.Any(p => p.Status == true && p.ProductName.Contains(searchName)));
+            }
+            
+            var categoriesWithProducts = await categoriesQuery
                 .OrderBy(c => c.CategoryName)
                 .ToListAsync();
             
+            // Filter products within each category
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                foreach (var category in categoriesWithProducts)
+                {
+                    category.Products = category.Products
+                        .Where(p => p.ProductName.Contains(searchName))
+                        .ToList();
+                }
+            }
+            
+            ViewBag.SearchName = searchName;
             return View(categoriesWithProducts);
         }
 
@@ -37,14 +66,51 @@ namespace ToyStore.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Shop()
+        public async Task<IActionResult> Shop(string searchName, int? categoryId)
         {
-            // Lấy danh sách sản phẩm được nhóm theo danh mục
-            var categoriesWithProducts = await _context.Categories
+            var categoriesQuery = _context.Categories
+                .Include(c => c.Products.Where(p => p.Status == true))
+                .AsQueryable();
+            
+            // Filter by category if provided
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                categoriesQuery = categoriesQuery.Where(c => c.CategoryId == categoryId.Value);
+            }
+            
+            // Only include categories that have products
+            categoriesQuery = categoriesQuery.Where(c => c.Products.Any(p => p.Status == true));
+            
+            var categoriesWithProducts = await categoriesQuery
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+            
+            // Filter products by name if search is provided
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                foreach (var category in categoriesWithProducts)
+                {
+                    category.Products = category.Products
+                        .Where(p => p.ProductName.Contains(searchName))
+                        .ToList();
+                }
+                
+                // Remove categories that have no matching products
+                categoriesWithProducts = categoriesWithProducts
+                    .Where(c => c.Products.Any())
+                    .ToList();
+            }
+            
+            // Get all categories for filter dropdown
+            var allCategories = await _context.Categories
                 .Include(c => c.Products.Where(p => p.Status == true))
                 .Where(c => c.Products.Any(p => p.Status == true))
                 .OrderBy(c => c.CategoryName)
                 .ToListAsync();
+            
+            ViewBag.Categories = allCategories;
+            ViewBag.SearchName = searchName;
+            ViewBag.CategoryId = categoryId;
             
             return View(categoriesWithProducts);
         }

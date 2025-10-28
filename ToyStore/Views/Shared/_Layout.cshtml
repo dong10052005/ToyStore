@@ -8,7 +8,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css?v=2" />
     <link rel="stylesheet" href="~/ToyStore.styles.css" asp-append-version="true" />
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Bootstrap Icons - THÊM MỚI -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 </head>
 <body>
     <header>
@@ -97,6 +105,39 @@
                         }
                     </ul>
                     <ul class="navbar-nav">
+                        <li class="nav-item dropdown" id="support-dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-headset"></i> Hỗ trợ
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="mailto:support@toystore.com">
+                                        <i class="fas fa-envelope"></i> Email: support@toystore.com
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="tel:0123456789">
+                                        <i class="fas fa-phone"></i> Hotline: 0123 456 789
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Privacy">
+                                        <i class="fas fa-info-circle"></i> Chính sách & Điều khoản
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Privacy">
+                                        <i class="fas fa-shipping-fast"></i> Giao hàng & Thanh toán
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Privacy">
+                                        <i class="fas fa-undo"></i> Đổi trả & Hoàn tiền
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         @if (Context.Session.GetString("IsAuthenticated") == "True")
                         {
                             <li class="nav-item dropdown">
@@ -157,6 +198,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

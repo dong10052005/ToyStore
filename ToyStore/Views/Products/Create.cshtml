@@ -4,7 +4,8 @@
     ViewData["Title"] = "Thêm sản phẩm mới";
 }
 
-<div class="row justify-content-center">
+<div class="crud-theme">
+    <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -22,7 +23,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Danh mục *</label>
-                                <select name="CategoryId" class="form-select" required>
+                                <select name="CategoryId" id="categorySelect" class="form-select" required>
                                     <option value="">-- Chọn danh mục --</option>
                                     @foreach (var category in ViewBag.Categories as List<ToyStore.Models.Category>)
                                     {
@@ -78,4 +79,17 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Kích hoạt Select2 cho thẻ select có id='categorySelect'
+            $('#categorySelect').select2({
+                theme: "bootstrap-5", // Dùng giao diện Bootstrap 5
+                dropdownParent: $('#categorySelect').parent() // Giúp Select2 hoạt động tốt hơn với Bootstrap
+            });
+        });
+    </script>
+}

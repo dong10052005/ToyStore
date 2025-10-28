@@ -6,9 +6,41 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="fas fa-box"></i> Quản lý sản phẩm</h2>
-    <a href="/Products/Create" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Thêm sản phẩm mới
-    </a>
+    <div class="d-flex align-items-center gap-3">
+        <form method="get" action="/Products" class="d-flex align-items-center gap-2">
+            <div class="search-group">
+                <input type="text" name="searchName" value="@ViewBag.SearchName" 
+                       class="form-control search-input" 
+                       placeholder="Tìm theo tên sản phẩm..." />
+            </div>
+            <div class="search-group">
+                <select name="categoryId" class="form-select category-select">
+                    <option value="0">-- Chọn danh mục --</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryId" selected="@(ViewBag.CategoryId != null && ViewBag.CategoryId == category.CategoryId)">
+                                @category.CategoryName
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-outline-light">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+            @if (!string.IsNullOrEmpty((string)ViewBag.SearchName) || (ViewBag.CategoryId != null && (int)ViewBag.CategoryId > 0))
+            {
+                <a href="/Products" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Xóa bộ lọc
+                </a>
+            }
+        </form>
+        <a href="/Products/Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Thêm sản phẩm mới
+        </a>
+    </div>
 </div>
 
 @if (TempData["SuccessMessage"] != null)
@@ -258,5 +290,91 @@
 
     .badge {
         font-weight: 600;
+    }
+
+    .search-group {
+        position: relative;
+    }
+
+    .search-input,
+    .category-select {
+        background: rgba(26, 26, 46, 0.8) !important;
+        border: 2px solid #00ff88 !important;
+        border-radius: 0.5rem !important;
+        color: #fff !important;
+        padding: 0.5rem 1rem;
+        min-width: 200px;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .search-input:focus,
+    .category-select:focus {
+        background: rgba(26, 26, 46, 1) !important;
+        border-color: #00ffff !important;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+        outline: none;
+    }
+
+    .category-select {
+        cursor: pointer;
+    }
+
+    .category-select option {
+        background: #1a1a2e !important;
+        color: #fff !important;
+    }
+
+    .btn-outline-light {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid #fff !important;
+        color: #fff !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-light:hover {
+        background: #fff !important;
+        color: #000 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-outline-secondary {
+        background: rgba(108, 117, 125, 0.1) !important;
+        border: 2px solid #6c757d !important;
+        color: #6c757d !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d !important;
+        color: #fff !important;
+        border-color: #6c757d !important;
+    }
+
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .gap-3 {
+        gap: 1rem !important;
+    }
+
+    @@media (max-width: 768px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .search-group .search-input,
+        .search-group .category-select {
+            min-width: 150px;
+        }
+
+        .d-flex.align-items-center {
+            flex-wrap: wrap;
+        }
     }
 </style>

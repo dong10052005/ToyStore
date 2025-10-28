@@ -7,9 +7,38 @@
 <div class="text-center">
     <h1 class="display-4">Chào mừng đến với ToyStore</h1>
     
+    <!-- Search Bar -->
+    <div class="container mb-4">
+        <form method="get" action="/Home" class="row g-3 justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text" style="background: rgba(26, 26, 46, 0.9); border: 2px solid #00ff88; color: #00ff88;">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" name="searchName" value="@ViewBag.SearchName" 
+                           class="form-control search-input-home" 
+                           placeholder="Tìm kiếm sản phẩm..." />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm
+                    </button>
+                    @if (!string.IsNullOrEmpty((string)ViewBag.SearchName))
+                    {
+                        <a href="/Home" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Xóa
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+    
     @if (user != null)
     {
-        <div class="alert alert-success" role="alert">
+        <!-- Toast Notification Container -->
+        <div class="toast-notification-container"></div>
+        
+        <!-- Welcome Alert (only shown once) -->
+        <div class="alert alert-success welcome-alert" role="alert" style="display: none;">
             <h4 class="alert-heading">Xin chào, @user.FullName!</h4>
             <p>Bạn đã đăng nhập với tư cách <strong>@user.UserType</strong></p>
             <hr>
@@ -23,39 +52,6 @@
             <p>Hãy <a asp-controller="Auth" asp-action="Login" class="alert-link">đăng nhập</a> hoặc <a asp-controller="Auth" asp-action="Register" class="alert-link">đăng ký</a> để trải nghiệm đầy đủ các tính năng của cửa hàng.</p>
         </div>
     }
-    
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-cubes"></i>
-                </div>
-                <h5 class="feature-title">Sản phẩm đa dạng</h5>
-                <p class="feature-description">Khám phá hàng nghìn sản phẩm đồ chơi chất lượng cao cho mọi lứa tuổi.</p>
-                <a asp-controller="Home" asp-action="Shop" class="feature-btn">Xem sản phẩm</a>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shipping-fast"></i>
-                </div>
-                <h5 class="feature-title">Giao hàng nhanh</h5>
-                <p class="feature-description">Giao hàng miễn phí trong nội thành, giao hàng nhanh chóng và an toàn.</p>
-                <a asp-controller="Home" asp-action="Privacy" class="feature-btn">Tìm hiểu thêm</a>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <h5 class="feature-title">Hỗ trợ 24/7</h5>
-                <p class="feature-description">Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc.</p>
-                <a asp-controller="Home" asp-action="Privacy" class="feature-btn">Liên hệ</a>
-            </div>
-        </div>
-    </div>
     
     <!-- Section hiển thị sản phẩm theo danh mục -->
     <div class="mt-5">
@@ -259,4 +255,154 @@
         background: rgba(26, 26, 46, 0.8) !important;
         color: #b0b0ff !important;
     }
+
+    .search-input-home {
+        background: rgba(26, 26, 46, 0.9) !important;
+        border: 2px solid #00ff88 !important;
+        border-left: none !important;
+        color: #fff !important;
+        padding: 0.75rem 1rem;
+    }
+
+    .search-input-home::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .search-input-home:focus {
+        background: rgba(26, 26, 46, 1) !important;
+        border-color: #00ffff !important;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+        outline: none;
+        color: #fff !important;
+    }
+
+    .input-group-text {
+        border-right: none !important;
+        border-radius: 0.5rem 0 0 0.5rem !important;
+    }
+
+    .search-input-home {
+        border-radius: 0 0.5rem 0.5rem 0 !important;
+    }
+
+    .btn-outline-secondary {
+        background: rgba(108, 117, 125, 0.1) !important;
+        border: 2px solid #6c757d !important;
+        color: #6c757d !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d !important;
+        color: #fff !important;
+        border-color: #6c757d !important;
+    }
+
+    /* Toast Notification Styles */
+    .toast-notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+    }
+
+    .toast-notification {
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.95), rgba(0, 255, 255, 0.95));
+        border: 2px solid #00ff88;
+        border-radius: 1rem;
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        animation: slideInRight 0.5s ease-out, fadeOut 0.8s ease-in 4s forwards;
+        transform-origin: top right;
+        min-width: 300px;
+    }
+
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(400px);
+        }
+    }
+
+    .toast-notification .toast-content h4 {
+        color: #000;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .toast-notification .toast-content p {
+        color: #000;
+        margin-bottom: 0.25rem;
+        font-size: 0.95rem;
+    }
+
+    .toast-notification .toast-content hr {
+        border-color: rgba(0, 0, 0, 0.2);
+        margin: 0.5rem 0;
+    }
+
+    .toast-notification .toast-content .toast-icon {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+        color: #000;
+    }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in and redirected from login
+        var userLoggedIn = @(user != null ? "true" : "false");
+        
+        // Check if there's a flag in session to show the toast
+        var showWelcomeToast = '@TempData["ShowWelcomeToast"]' || sessionStorage.getItem('showWelcomeToast');
+        
+        if (userLoggedIn && showWelcomeToast) {
+            // Clear the flag in browser storage so it doesn't show again
+            sessionStorage.removeItem('showWelcomeToast');
+            
+            setTimeout(function() {
+                // Create toast notification
+                var toastContainer = document.querySelector('.toast-notification-container');
+                if (toastContainer) {
+                    var toast = document.createElement('div');
+                    toast.className = 'toast-notification';
+                    
+                    var userName = '@Html.Raw(user?.FullName ?? "")';
+                    var userType = '@Html.Raw(user?.UserType ?? "")';
+                    
+                    toast.innerHTML = `
+                        <div class="toast-content">
+                            <h4><i class="fas fa-check-circle toast-icon"></i>Đăng nhập thành công!</h4>
+                            <p>Xin chào, ${userName}!</p>
+                            <p>Bạn đã đăng nhập với tư cách <strong>${userType}</strong></p>
+                            <hr style="margin: 0.5rem 0;">
+                            <p class="mb-0" style="font-weight: 600;">Chúc bạn mua sắm vui vẻ!</p>
+                        </div>
+                    `;
+                    
+                    toastContainer.appendChild(toast);
+                    
+                    // Remove toast from DOM after animation completes (4s + 0.8s fade out)
+                    setTimeout(function() {
+                        if (toast && toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 4800);
+                }
+            }, 300);
+        }
+    });
+</script>
